@@ -4,5 +4,6 @@
     },
     "[prisma]": {
       "editor.formatOnSave": true
-    }
+    },
+    "typescript.preferences.preferTypeOnlyAutoImports": false
   }
