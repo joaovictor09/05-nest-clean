@@ -13,5 +13,6 @@ import { HttpModule } from './http/http.module'
     AuthModule,
     HttpModule,
   ],
+  exports: [],
 })
 export class AppModule {}
