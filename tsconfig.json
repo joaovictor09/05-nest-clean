@@ -19,7 +19,8 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/domain/*": ["./src/domain/*"]
     },
     "types": [
       "vitest/globals"

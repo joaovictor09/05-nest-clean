@@ -5,5 +5,8 @@
     "[prisma]": {
       "editor.formatOnSave": true
     },
-    "typescript.preferences.preferTypeOnlyAutoImports": false
+    "typescript.preferences.preferTypeOnlyAutoImports": false,
+    "cSpell.words": [
+      "encrypter"
+    ]
   }
