@@ -17,7 +17,7 @@ export class PrismaAnswersRepository implements AnswersRepository {
       where: { questionId },
       orderBy: { createdAt: 'desc' },
       take: 20,
-      skip: (page - 1) * page,
+      skip: (page - 1) * 20,
     })
 
     return answers.map(PrismaAnswerMapper.toDomain)
