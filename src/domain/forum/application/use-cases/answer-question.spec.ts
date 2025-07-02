@@ -19,22 +19,35 @@ describe('Create Answer Use Case', () => {
 
   it('should be able to create a answer', async () => {
     const result = await sut.execute({
-      instructorId: '1',
+      authorId: '1',
+      questionId: '1',
+      content: 'Conteúdo da resposta',
+      attachmentsIds: [],
+    })
+
+    expect(result.isRight()).toBe(true)
+    expect(inMemoryAnswersRepository.items[0]).toEqual(result.value?.answer)
+  })
+
+  it('should be persist attachments when answer a question', async () => {
+    const result = await sut.execute({
+      authorId: '1',
       questionId: '1',
       content: 'Conteúdo da resposta',
       attachmentsIds: ['1', '2'],
     })
 
-    expect(result.isRight()).toBe(true)
-    expect(inMemoryAnswersRepository.items[0]).toEqual(result.value?.answer)
-    expect(
-      inMemoryAnswersRepository.items[0].attachments.currentItems,
-    ).toHaveLength(2)
-    expect(inMemoryAnswersRepository.items[0].attachments.currentItems).toEqual(
-      [
-        expect.objectContaining({ attachmentId: new UniqueEntityID('1') }),
-        expect.objectContaining({ attachmentId: new UniqueEntityID('2') }),
-      ],
+    expect(result.isRight()).toBeTruthy()
+    expect(inMemoryAnswerAttachmentsRepository.items).toHaveLength(2)
+    expect(inMemoryAnswerAttachmentsRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('1'),
+        }),
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('2'),
+        }),
+      ]),
     )
   })
 })
