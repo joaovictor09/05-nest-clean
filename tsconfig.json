@@ -23,7 +23,8 @@
       "@/domain/*": ["./src/domain/*"]
     },
     "types": [
-      "vitest/globals"
+      "vitest/globals",
+      "multer"
     ]
   }
 }
