@@ -31,6 +31,42 @@ describe('Edit Answer Use Case', () => {
 
     inMemoryAnswersRepository.create(newAnswer)
 
+    const result = await sut.execute({
+      answerId: newAnswer.id.toString(),
+      authorId: 'author-1',
+      content: 'Edited content',
+      attachmentsIds: [],
+    })
+
+    expect(result.isRight()).toBeTruthy()
+    expect(inMemoryAnswersRepository.items[0].content).toEqual('Edited content')
+  })
+
+  it('should not be able to edit a answer from another user', async () => {
+    const newAnswer = makeAnswer({
+      authorId: new UniqueEntityID('author-1'),
+    })
+
+    inMemoryAnswersRepository.create(newAnswer)
+
+    const result = await sut.execute({
+      answerId: newAnswer.id.toString(),
+      authorId: 'author-2',
+      content: 'Edited content',
+      attachmentsIds: [],
+    })
+
+    expect(result.isLeft()).toBeTruthy()
+    expect(result.value).toBeInstanceOf(NotAllowedError)
+  })
+
+  it('should sync new and removed attachments when editing a answer', async () => {
+    const newAnswer = makeAnswer({
+      authorId: new UniqueEntityID('author-1'),
+    })
+
+    await inMemoryAnswersRepository.create(newAnswer)
+
     inMemoryAnswerAttachmentsRepository.items.push(
       makeAnswerAttachment({
         answerId: newAnswer.id,
@@ -50,34 +86,16 @@ describe('Edit Answer Use Case', () => {
     })
 
     expect(result.isRight()).toBeTruthy()
-    expect(inMemoryAnswersRepository.items[0].content).toEqual('Edited content')
-
-    expect(
-      inMemoryAnswersRepository.items[0].attachments.currentItems,
-    ).toHaveLength(2)
-    expect(inMemoryAnswersRepository.items[0].attachments.currentItems).toEqual(
-      [
-        expect.objectContaining({ attachmentId: new UniqueEntityID('1') }),
-        expect.objectContaining({ attachmentId: new UniqueEntityID('3') }),
-      ],
+    expect(inMemoryAnswerAttachmentsRepository.items).toHaveLength(2)
+    expect(inMemoryAnswerAttachmentsRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('1'),
+        }),
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('3'),
+        }),
+      ]),
     )
-  })
-
-  it('should not be able to edit a answer from another user', async () => {
-    const newAnswer = makeAnswer({
-      authorId: new UniqueEntityID('author-1'),
-    })
-
-    inMemoryAnswersRepository.create(newAnswer)
-
-    const result = await sut.execute({
-      answerId: newAnswer.id.toString(),
-      authorId: 'author-2',
-      content: 'Edited content',
-      attachmentsIds: [],
-    })
-
-    expect(result.isLeft()).toBeTruthy()
-    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })
