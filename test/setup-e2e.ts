@@ -6,10 +6,12 @@ import { randomUUID } from 'node:crypto'
 config({
   path: '.env',
   override: true,
+  quiet: true,
 })
 config({
   path: '.env.test',
   override: true,
+  quiet: true,
 })
 
 const prisma = new PrismaClient()
